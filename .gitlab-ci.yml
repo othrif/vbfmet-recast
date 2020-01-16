@@ -1,0 +1,21 @@
+recast:
+  tags:
+  - docker-privileged
+  services:
+  - docker:stable-dind
+  stage: build
+  image: "recast/recastatlas:v0.0.19"
+  script:
+  # add my workflow
+  - $(recast catalogue add $PWD)
+  - recast catalogue ls
+  - recast catalogue describe examples/helloworld
+  - recast catalogue check examples/helloworld
+  
+  # run the workflow
+  - recast run examples/helloworld --tag myrun
+  artifacts:
+    paths:
+    - recast-myrun
+    expire_in: 1 day
+    when: always

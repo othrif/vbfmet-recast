@@ -1,9 +1,23 @@
 stages:
-- name: hello_world
+- name: eventselection
   dependencies: [init]
   scheduler:
     scheduler_type: singlestep-stage
     parameters:
-      name: {step: init, output: name}
-      outputfile: '{workdir}/hello_world.txt'
-    step: {$ref: 'steps.yml#hello_world'}
+      name: recast_sample
+      did: {step: init, output: did}
+      xsec_in_pb: {step: init, output: xsec_in_pb}
+      dxaod_file: {step: init, output: dxaod_file}
+      lumi_in_ifb: 30.0
+      submitDir: '{workdir}/submitDir'
+    step: {$ref: 'steps.yml#/eventselection'}
+- name: statanalysis
+  dependencies: [eventselection]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      data_file: /code/data/data.root
+      signal_file: {step: eventselection, output: outputfile }
+      background_file: /code/data/background.root
+      resultdir: '{workdir}/fitresults'
+    step: {$ref: 'steps.yml#/statanalysis'}

@@ -1,9 +1,9 @@
 
-name: examples/helloworld
+name: tutorial/myrecast #atlas/atlas-conf-2018-51
 
 metadata:
-  author: lukasheinrich
-  short_description: 'An example recast configuration of ATLAS'
+  author: Othmane Rifki
+  short_description: 'Recast configuration for the ATLAS VBF+MET analysis'
 
 spec:
   workflow: workflow.yml
@@ -11,10 +11,40 @@ spec:
 example_inputs:
   default:
     initdata:
-      name: hello
+      did: 404958
+      xsec_in_pb: 0.00122
+      dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root 
+  alternative:
+    initdata:
+      did: 404951
+      xsec_in_pb: 0.001735
+      dxaod_file: https://recastwww.web.cern.ch/recastwww/data/reana-recast-demo/mc15_13TeV.789012.cap_recast_demo_signal_two.root    
 
 results:
-- name: 'My Result'
-  relpath: hello_world/hello_world.txt
+- name: CLs 95% based upper limit on poi
+  relpath: statanalysis/fitresults/limit_data.json
   load_yaml: true
-  
+- name: CLs 95% at nominal poi
+  relpath: statanalysis/fitresults/limit_data_nomsignal.json
+  load_yaml: true
+
+tests:
+- name: test_eventselection
+  spec: steps.yml#/eventselection
+  parameters:
+    did: 404958
+    name: recast
+    submitDir: '{workdir}/submitDir'
+    dxaod_file: https://recastwww.web.cern.ch/recastwww/data/reana-recast-demo/mc15_13TeV.123456.cap_recast_demo_signal_one.root
+    xsec_in_pb: 0.00122
+    lumi_in_ifb: 30
+
+- name: test_statanalysis
+  spec: steps.yml#/statanalysis
+  parameters:
+    signal_file: '{readdir0}/hist-sample.root'
+    resultdir: '{workdir}/fitresults'
+    data_file: /code/data/data.root
+    background_file: /code/data/background.root
+  data:
+  - testdata

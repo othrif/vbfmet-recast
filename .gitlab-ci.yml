@@ -4,30 +4,18 @@ recast:
   services:
   - docker:stable-dind
   stage: build
-  image: "recast/recastatlas:v0.0.20"
+  image: "recast/recastatlas:v0.0.19"
   script:
   # add my workflow
   - $(recast catalogue add $PWD)
-  - $(recast auth write --basedir auth)
-
   - recast catalogue ls
-  - recast catalogue describe tutorial/myrecast
-  - recast catalogue check tutorial/myrecast
-
-  # run the test
-
-  - recast tests run tutorial/myrecast test_eventselection --tag myevseltest
-  - recast tests run tutorial/myrecast test_statanalysis --tag mystattest
-
+  - recast catalogue describe examples/helloworld
+  - recast catalogue check examples/helloworld
+  
   # run the workflow
-
-  - recast run tutorial/myrecast --example default --tag myworkflowrun
-
+  - recast run examples/helloworld --tag myrun
   artifacts:
     paths:
-    - recast-test-myevseltest
-    - recast-test-mystattest
-    - recast-myworkflowrun
+    - recast-myrun
     expire_in: 1 day
     when: always
-

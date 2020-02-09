@@ -2,9 +2,10 @@ recast:
   tags:
   - docker-privileged
   services:
-  - docker:stable-dind
-  stage: build
-  image: "recast/recastatlas:v0.0.19"
+  - docker:19.03.1-dind
+  image: recast/recastatlas:v0.1.0
+  variables:
+   RECAST_DEFAULT_RUN_BACKEND: local
   script:
   # add my workflow
   - $(recast catalogue add $PWD)

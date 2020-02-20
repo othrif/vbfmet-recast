@@ -1,20 +1,57 @@
 
-name: examples/helloworld
+# Give your analysis a shorthand name in the form <group>/<identifier>
+# e.g. atlas/atlas-conf-2018-041
+name: examples/atlas-more-realistic
 
+# Add some information about who has put together this RECASTable analysis.
 metadata:
   author: lukasheinrich
   short_description: 'An example recast configuration of ATLAS'
 
+# A reference where to find the workflow definition
 spec:
   workflow: workflow.yml
 
+# This is where you store example workflow parameters
+# just to give users a sense of what inputs are needed
 example_inputs:
   default:
     initdata:
-      name: hello
+      did: 404958
+      xsec_in_pb: 0.00122
+      dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root
+  alternative:
+    initdata:
+      did: 404951
+      xsec_in_pb: 0.001735
+      dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_two.root
 
 results:
-- name: 'My Result'
-  relpath: hello_world/hello_world.txt
+- name: CLs 95% based upper limit on poi
+  relpath: statanalysis/fitresults/limit_data.json
   load_yaml: true
-  
+- name: CLs 95% at nominal poi
+  relpath: statanalysis/fitresults/limit_data_nomsignal.json
+  load_yaml: true
+
+
+tests:
+- name: test_eventselection
+  spec: steps.yml#/eventselection
+  parameters:
+    did: 404958
+    name: recast
+    submitDir: '{workdir}/submitDir'
+    dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root
+    xsec_in_pb: 0.00122
+    lumi_in_ifb: 30
+
+- name: test_statanalysis
+  spec: steps.yml#/statanalysis
+  parameters:
+    signal_file: '{readdir0}/hist-sample.root'
+    resultdir: '{workdir}/fitresults'
+    data_file: /code/data/data.root
+    background_file: /code/data/background.root
+  data:
+  - testdata

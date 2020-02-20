@@ -2,21 +2,37 @@ recast:
   tags:
   - docker-privileged
   services:
-  - docker:19.03.1-dind
-  image: recast/recastatlas:v0.1.0
+  - docker:stable-dind
+  stage: build
   variables:
    RECAST_DEFAULT_RUN_BACKEND: local
+  image: "recast/recastatlas:v0.1.0"
   script:
-  # add my workflow
+  # authenticate using env vars defined in RECAST
+  - $(recast auth write --basedir auth)
+  - recast auth check-access-xrootd root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root
+
+  # make the workflow described in this repo known to RECAST
   - $(recast catalogue add $PWD)
+
   - recast catalogue ls
-  - recast catalogue describe examples/helloworld
-  - recast catalogue check examples/helloworld
-  
+  - recast catalogue describe examples/atlas-more-realistic
+  - recast catalogue check examples/atlas-more-realistic
+
+  # run the test
+
+  - recast tests run examples/atlas-more-realistic test_eventselection --tag myevseltest
+  - recast tests run examples/atlas-more-realistic test_statanalysis --tag mystattest
+
   # run the workflow
-  - recast run examples/helloworld --tag myrun
+
+  - recast run examples/atlas-more-realistic --example default --tag myworkflowrun
+
   artifacts:
     paths:
-    - recast-myrun
+    - recast-test-myevseltest
+    - recast-test-mystattest
+    - recast-myworkflowrun
     expire_in: 1 day
     when: always
+

@@ -1,23 +1,29 @@
 stages:
-- name: eventselection
+- name: stanalysiscode
   dependencies: [init]
   scheduler:
     scheduler_type: singlestep-stage
     parameters:
-      name: recast_sample
-      did: {step: init, output: did}
-      xsec_in_pb: {step: init, output: xsec_in_pb}
-      dxaod_file: {step: init, output: dxaod_file}
-      lumi_in_ifb: 30.0
+      name: recast-vbfmet-stanalysiscode
       submitDir: '{workdir}/submitDir'
-    step: {$ref: 'steps.yml#/eventselection'}
-- name: statanalysis
-  dependencies: [eventselection]
+    step: {$ref: 'steps.yml#/stanalysiscode'}
+
+- name: stpostprocessing
+  dependencies: [init, stanalysiscode]
   scheduler:
     scheduler_type: singlestep-stage
     parameters:
-      data_file: /code/data/data.root
-      signal_file: {step: eventselection, output: outputfile }
-      background_file: /code/data/background.root
+      name: recast-vbfmet-stpostprocessing
+      input_directory: {step: stanalysiscode, output: HF_files}
+    step: {$ref: 'steps.yml#/stpostprocessing'}
+
+- name: statanalysis
+  dependencies: [stanalysiscode, stpostprocessing, init]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      input_histfitter: '{workdir}/HF_files'
+      signal_file: {step: stpostprocessing, output: HF_files }
+      background_file: exampleFile/HF_jan7_mc16all_nom.root
       resultdir: '{workdir}/fitresults'
     step: {$ref: 'steps.yml#/statanalysis'}

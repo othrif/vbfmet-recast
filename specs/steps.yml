@@ -1,23 +1,60 @@
-eventselection:
+stanalysiscode:
   process:
     process_type: 'interpolated-script-cmd'
     script: |
       source /recast_auth/getkrb.sh
       source /home/atlas/release_setup.sh
-      source /analysis/build/x86*/setup.sh
-      cat << 'EOF' > recast_xsecs.txt
-      id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
-      {did} {name} {xsec_in_pb} 1.0 1.0 1.0
-      EOF
-      echo {dxaod_file} > recast_inputs.txt
-      myEventSelection {submitDir} recast_inputs.txt recast_xsecs.txt {lumi_in_ifb}
+      source /analysis/build/*/setup.sh
+      export USER=othrif
+      echo "RubeFicu5" | kinit vbfhww
+
+      runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
+
+      # Reformat the output such that it can be used by STPostProcessing
+      mkdir -p input_files/user.othrif.vXX.999999.VBFHAltSignal.root
+      cp {submitDir}/data-MiniNtuple/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.root input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root
+
   publisher:
     publisher_type: 'interpolated-pub'
     publish:
-      outputfile: '{submitDir}/hist-sample.root'
+      outputfile: 'input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root'
   environment:
     environment_type: 'docker-encapsulated'
-    image: reanahub/reana-demo-atlas-recast-eventselection
+    image: gitlab-registry.cern.ch/vbfinv/stanalysiscode
+    imagetag: master
+    resources:
+    - KRB5Auth
+
+stpostprocessing:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      source /recast_auth/getkrb.sh
+      source /home/atlas/release_setup.sh
+      source /analysis/build/*/setup.sh
+      export DISPLAY=localhost:0.0
+
+      echo "./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root" > list
+      python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
+      athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput ./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
+
+      mkdir -p output_files
+      hadd output_files/VBFHAltSignal-MicroNtuple.root  VBFH125*.root
+
+      mkdir -p HF_files
+      cd HF_files
+      athena VBFAnalysis/HFInputJobOptions.py --filesInput ../output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
+      hadd HFVBFHAltSignalNominal.root HFVBFHAltSignalNominal*root
+      cd ..
+
+  publisher:
+    publisher_type: 'interpolated-pub'
+    publish:
+      outputfile: 'HF_files/HFVBFHAltSignalNominal.root'
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: gitlab-registry.cern.ch/vbfinv/stpostprocessing
+    imagetag: master
     resources:
     - KRB5Auth
 
@@ -27,19 +64,19 @@ statanalysis:
     interpreter: bash
     script: |
       source /home/atlas/release_setup.sh
-      python /code/make_ws.py {data_file} {signal_file} {background_file}
-      mkdir -p {resultdir}
-      python /code/plot.py results/meas_combined_meas_model.root {resultdir}/pre.png {resultdir}/post.png
-      python /code/set_limit.py results/meas_combined_meas_model.root \
-             {resultdir}/limit.png {resultdir}/limit_data.json \
-             {resultdir}/limit_data_nomsignal.json
+      cd HistFitterTutorial
+      source setup.sh
+      cd src
+      make
+      echo "Launching the stat only limit...this will take a little while..."
+      hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root HF_files/HFVBFHAltSignalNominal.root
+      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal
+      tail -30 limit.log
   publisher:
     publisher_type: interpolated-pub
     publish:
-      pre:    '{resultdir}/pre.png'
-      post:   '{resultdir}/post.png'
-      limit:  '{resultdir}/limit_data.json'
-      nomsig: '{resultdir}/limit_data_nomsignal.json'
+      limit:  'limit.log'
   environment:
     environment_type: 'docker-encapsulated'
-    image: reanahub/reana-demo-atlas-recast-statanalysis
+    image: gitlab-registry.cern.ch/vbfinv/statstools
+    imagetag: master

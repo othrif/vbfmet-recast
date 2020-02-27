@@ -6,23 +6,23 @@ recast:
   stage: build
   variables:
    RECAST_DEFAULT_RUN_BACKEND: local
-  image: "recast/recastatlas:v0.1.0"
+  image: "VBFInv/recast-vbfmet"
   script:
   # authenticate using env vars defined in RECAST
   - $(recast auth write --basedir auth)
-  - recast auth check-access-xrootd root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root
+  - recast auth check-access-xrootd root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
 
   # make the workflow described in this repo known to RECAST
   - $(recast catalogue add $PWD)
 
   - recast catalogue ls
-  - recast catalogue describe examples/atlas-more-realistic
-  - recast catalogue check examples/atlas-more-realistic
+  - recast catalogue describe examples/atlas-vbfmet
+  - recast catalogue check examples/atlas-vbfmet
 
   # run the test
 
-  - recast tests run examples/atlas-more-realistic test_eventselection --tag myevseltest
-  - recast tests run examples/atlas-more-realistic test_statanalysis --tag mystattest
+  - recast tests run examples/atlas-vbfmet test_eventselection --tag myevseltest
+  - recast tests run examples/atlas-vbfmet test_statanalysis --tag mystattest
 
   # run the workflow
 

@@ -1,12 +1,12 @@
 
 # Give your analysis a shorthand name in the form <group>/<identifier>
 # e.g. atlas/atlas-conf-2018-041
-name: examples/atlas-more-realistic
+name: atlas/atlas-vbfmet
 
 # Add some information about who has put together this RECASTable analysis.
 metadata:
-  author: lukasheinrich
-  short_description: 'An example recast configuration of ATLAS'
+  author: othmanerifki
+  short_description: 'ATLAS VBF+MET Hinv'
 
 # A reference where to find the workflow definition
 spec:
@@ -20,11 +20,6 @@ example_inputs:
       did: 404958
       xsec_in_pb: 0.00122
       dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root
-  alternative:
-    initdata:
-      did: 404951
-      xsec_in_pb: 0.001735
-      dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_two.root
 
 results:
 - name: CLs 95% based upper limit on poi
@@ -36,22 +31,22 @@ results:
 
 
 tests:
-- name: test_eventselection
-  spec: steps.yml#/eventselection
+- name: test_stanalysiscode
+  spec: steps.yml#/stanalysiscode
   parameters:
-    did: 404958
-    name: recast
+    name: recast-vbfmet-stanalysiscode
     submitDir: '{workdir}/submitDir'
-    dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root
-    xsec_in_pb: 0.00122
-    lumi_in_ifb: 30
+    dxaod_file: root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
+
+- name: test_stpostprocessing
+  spec: steps.yml#/stpostprocessing
+  parameters:
+    name: recast-vbfmet-stpostprocessing
 
 - name: test_statanalysis
   spec: steps.yml#/statanalysis
   parameters:
-    signal_file: '{readdir0}/hist-sample.root'
+    signal_file: 'HF_files/HFVBFHAltSignalNominal.root'
     resultdir: '{workdir}/fitresults'
-    data_file: /code/data/data.root
-    background_file: /code/data/background.root
   data:
   - testdata

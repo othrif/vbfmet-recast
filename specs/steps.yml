@@ -6,7 +6,7 @@ stanalysiscode:
       source /home/atlas/release_setup.sh
       source /analysis/build/*/setup.sh
       export USER=othrif
-      echo "RubeFicu5" | kinit vbfhww
+      echo $RECAST_AUTH_PASSWORD | kinit $RECAST_AUTH_USERNAME
 
       runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
 

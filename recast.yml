@@ -17,10 +17,7 @@ spec:
 example_inputs:
   default:
     initdata:
-      did: 404958
-      xsec_in_pb: 0.00122
-      dxaod_file: root://eosuser.cern.ch//eos/project/r/recast/atlas/tutorial_safe_inputs/mc15_13TeV.123456.cap_recast_demo_signal_one.root
-
+      dxaod_file: root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
 results:
 - name: CLs 95% based upper limit on poi
   relpath: statanalysis/fitresults/limit_data.json
@@ -46,7 +43,7 @@ tests:
 - name: test_statanalysis
   spec: steps.yml#/statanalysis
   parameters:
-    signal_file: 'HF_files/HFVBFHAltSignalNominal.root'
-    resultdir: '{workdir}/fitresults'
+    signal_file: ''
+    resultdir: ''
   data:
   - testdata

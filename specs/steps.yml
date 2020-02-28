@@ -24,59 +24,61 @@ stanalysiscode:
     imagetag: master
     resources:
     - KRB5Auth
+    - GRIDProxy
 
-stpostprocessing:
-  process:
-    process_type: 'interpolated-script-cmd'
-    script: |
-      source /recast_auth/getkrb.sh
-      source /home/atlas/release_setup.sh
-      source /analysis/build/*/setup.sh
-      export DISPLAY=localhost:0.0
-
-      echo "./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root" > list
-      python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
-      athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput ./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
-
-      mkdir -p output_files
-      hadd output_files/VBFHAltSignal-MicroNtuple.root  VBFH125*.root
-
-      mkdir -p HF_files
-      cd HF_files
-      athena VBFAnalysis/HFInputJobOptions.py --filesInput ../output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
-      hadd HFVBFHAltSignalNominal.root HFVBFHAltSignalNominal*root
-      cd ..
-
-  publisher:
-    publisher_type: 'interpolated-pub'
-    publish:
-      outputfile: 'HF_files/HFVBFHAltSignalNominal.root'
-  environment:
-    environment_type: 'docker-encapsulated'
-    image: gitlab-registry.cern.ch/vbfinv/stpostprocessing
-    imagetag: master
-    resources:
-    - KRB5Auth
-
-statanalysis:
-  process:
-    process_type: interpolated-script-cmd
-    interpreter: bash
-    script: |
-      source /home/atlas/release_setup.sh
-      cd HistFitterTutorial
-      source setup.sh
-      cd src
-      make
-      echo "Launching the stat only limit...this will take a little while..."
-      hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root HF_files/HFVBFHAltSignalNominal.root
-      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal
-      tail -30 limit.log
-  publisher:
-    publisher_type: interpolated-pub
-    publish:
-      limit:  'limit.log'
-  environment:
-    environment_type: 'docker-encapsulated'
-    image: gitlab-registry.cern.ch/vbfinv/statstools
-    imagetag: master
+#stpostprocessing:
+#  process:
+#    process_type: 'interpolated-script-cmd'
+#    script: |
+#      source /recast_auth/getkrb.sh
+#      source /home/atlas/release_setup.sh
+#      source /analysis/build/*/setup.sh
+#      export DISPLAY=localhost:0.0
+#
+#      echo "./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root" > list
+#      python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
+#      athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput ./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
+#
+#      mkdir -p output_files
+#      hadd output_files/VBFHAltSignal-MicroNtuple.root  VBFH125*.root
+#
+#      mkdir -p HF_files
+#      cd HF_files
+#      athena VBFAnalysis/HFInputJobOptions.py --filesInput ../output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
+#      hadd HFVBFHAltSignalNominal.root HFVBFHAltSignalNominal*root
+#      cd ..
+#
+#  publisher:
+#    publisher_type: 'interpolated-pub'
+#    publish:
+#      outputfile: 'HF_files/HFVBFHAltSignalNominal.root'
+#  environment:
+#    environment_type: 'docker-encapsulated'
+#    image: gitlab-registry.cern.ch/vbfinv/stpostprocessing
+#    imagetag: master
+#    resources:
+#    - KRB5Auth
+#
+#statanalysis:
+#  process:
+#    process_type: interpolated-script-cmd
+#    interpreter: bash
+#    script: |
+#      source /home/atlas/release_setup.sh
+#      cd HistFitterTutorial
+#      source setup.sh
+#      cd src
+#      make
+#      echo "Launching the stat only limit...this will take a little while..."
+#      hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root HF_files/HFVBFHAltSignalNominal.root
+#      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal
+#      tail -30 limit.log
+#  publisher:
+#    publisher_type: interpolated-pub
+#    publish:
+#      limit:  'limit.log'
+#  environment:
+#    environment_type: 'docker-encapsulated'
+#    image: gitlab-registry.cern.ch/vbfinv/statstools
+#    imagetag: master
+#

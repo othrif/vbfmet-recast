@@ -4,7 +4,7 @@ stages:
   scheduler:
     scheduler_type: singlestep-stage
     parameters:
-      name: recast-vbfmet-stanalysiscode
+      name: {step: init, output: dxaod_file}
       submitDir: '{workdir}/submitDir'
     step: {$ref: 'steps.yml#/stanalysiscode'}
 

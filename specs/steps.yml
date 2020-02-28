@@ -13,7 +13,9 @@ stanalysiscode:
       # Reformat the output such that it can be used by STPostProcessing
       mkdir -p input_files/user.othrif.vXX.999999.VBFHAltSignal.root
       cp {submitDir}/data-MiniNtuple/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.root input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root
-
+      mkdir output_test
+      touch output_test/dummy.txt
+      echo "did it work??" >> output_test/dummy.txt
   publisher:
     publisher_type: 'interpolated-pub'
     publish:
@@ -21,7 +23,7 @@ stanalysiscode:
   environment:
     environment_type: 'docker-encapsulated'
     image: gitlab-registry.cern.ch/vbfinv/stanalysiscode
-    imagetag: master
+    imagetag: latest
     resources:
     - KRB5Auth
     - GRIDProxy

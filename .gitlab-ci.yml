@@ -6,7 +6,7 @@ recast:
   stage: build
   variables:
    RECAST_DEFAULT_RUN_BACKEND: local
-  image: "recast/recast-atlas"
+  image: "recast/recastatlas:v0.1.0"
   script:
   # authenticate using env vars defined in RECAST
   - $(recast auth write --basedir auth)

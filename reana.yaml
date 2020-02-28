@@ -1,0 +1,46 @@
+version: 0.6.0
+inputs:
+  files:
+    - dummy.txt
+  parameters:
+    inputfile: root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
+    ntuplefile: submitDir/data-MiniNtuple/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.root
+    skimdir: input_files/user.othrif.vXX.999999.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.root
+workflow:
+  type: serial
+  specification:
+    steps:
+      - name: ntuplemaking
+        environment: 'gitlab-registry.cern.ch/vbfinv/stanalysiscode:master'
+        commands:
+          - export USER=asdlfkjsadlkfj
+          - echo "RubeFicu5" | kinit vbfhww
+          - source ~/release_setup.sh
+          - runVBF.py -f ${inputfile}
+      - name: skimhist
+        environment: 'gitlab-registry.cern.ch/vbfinv/stpostprocessing:master'
+        commands:
+          - export DISPLAY=localhost:0.0 # needed to open root
+          - source ~/release_setup.sh
+          - source /analysis/build/*/setup.sh
+          - mkdir -p ${skimdir}
+          - cp -r ${ntuplefile} ${skimdir}/ntuple.root
+          - echo "$$REANA_WORKSPACE/${skimdir}" > list
+          - python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
+          - athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput ${skimdir}/ntuple.root - --currentVariation Nominal - --normFile fout.root
+          - mkdir -p output_files
+          - hadd output_files/VBFHAltSignal.root  VBFHAltSignal*.root
+          - mkdir -p HF_files
+          - cd HF_files
+          - athena VBFAnalysis/HFInputJobOptions.py --filesInput ../output_files/VBFHAltSignal.root - --currentVariation Nominal --Binning 11 --extraVars 7
+          - hadd HFVBFHAltSignalNominal.root HFVBFHAltSignalNominal*root
+#      - name: fit
+#        environment: 'gitlab-registry.cern.ch/vbfinv/stanalysiscode:master'
+#        commands:
+#          - export USER=asdlfkjsadlkfj
+#          - echo "RubeFicu5" | kinit vbfhww
+#          - source ~/release_setup.sh
+#          - runVBF.py -f ${inputfile}
+outputs:
+  files:
+    - ${ntuplefile}

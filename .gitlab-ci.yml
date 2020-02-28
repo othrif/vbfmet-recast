@@ -6,7 +6,7 @@ recast:
   stage: build
   variables:
    RECAST_DEFAULT_RUN_BACKEND: local
-  image: "VBFInv/recast-vbfmet"
+  image: "recast/recast-atlas"
   script:
   # authenticate using env vars defined in RECAST
   - $(recast auth write --basedir auth)

@@ -1,1 +1,0 @@
-echo 'with1Heart@'|kinit othrif@CERN.CH

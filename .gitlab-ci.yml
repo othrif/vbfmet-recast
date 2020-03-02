@@ -16,23 +16,23 @@ recast:
   - $(recast catalogue add $PWD)
 
   - recast catalogue ls
-  - recast catalogue describe examples/atlas-vbfmet
-  - recast catalogue check examples/atlas-vbfmet
+  - recast catalogue describe atlas/atlas-vbfmet
+  - recast catalogue check atlas/atlas-vbfmet
 
   # run the test
 
-  - recast tests run examples/atlas-vbfmet test_eventselection --tag myevseltest
-  - recast tests run examples/atlas-vbfmet test_statanalysis --tag mystattest
+  - recast tests run atlas/atlas-vbfmet test_stanalysiscode --tag stanalysiscode
+#  - recast tests run atlas/atlas-vbfmet test_statanalysis --tag mystattest
 
   # run the workflow
 
-  - recast run examples/atlas-more-realistic --example default --tag myworkflowrun
+  - recast run atlas/atlas-vbfmet --example default --tag myworkflowrun
 
   artifacts:
     paths:
-    - recast-test-myevseltest
-    - recast-test-mystattest
-    - recast-myworkflowrun
+    - recast-test-mystanalysiscode
+ #   - recast-test-mystattest
+ #   - recast-myworkflowrun
     expire_in: 1 day
     when: always
 

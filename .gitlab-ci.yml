@@ -21,16 +21,17 @@ recast:
 
   # run the test
 
-  - recast tests run atlas/atlas-vbfmet test_stanalysiscode --tag stanalysiscode
+# - recast tests run atlas/atlas-vbfmet test_stanalysiscode --tag stanalysiscode
 #  - recast tests run atlas/atlas-vbfmet test_statanalysis --tag mystattest
 
   # run the workflow
 
-  - recast run atlas/atlas-vbfmet --example default --tag myworkflowrun
+  #- recast run atlas/atlas-vbfmet --example default --tag myworkflowrun
+  - recast run atlas/atlas-vbfmet
 
   artifacts:
     paths:
-    - recast-test-mystanalysiscode
+ #   - recast-test-mystanalysiscode
  #   - recast-test-mystattest
  #   - recast-myworkflowrun
     expire_in: 1 day

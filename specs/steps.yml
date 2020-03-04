@@ -14,10 +14,13 @@ stanalysiscode:
       ls -lR
       cp submitDir/data-MiniNtuple/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.root input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root
       ls -lR
+      mv submitDir/data-MiniNtuple {outputdir}
+      ls -lR
   publisher:
     publisher_type: 'interpolated-pub'
     publish:
       outputfile: 'input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root'
+      outputdir: '{outputdir}'
   environment:
     environment_type: 'docker-encapsulated'
     image: gitlab-registry.cern.ch/vbfinv/stanalysiscode

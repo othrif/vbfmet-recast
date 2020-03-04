@@ -6,6 +6,7 @@ stages:
     parameters:
       name: {step: init, output: dxaod_file}
       submitDir: '{workdir}/submitDir'
+      outputdir: '{workdir}/output'
     step: {$ref: 'steps.yml#/stanalysiscode'}
 
 #- name: stpostprocessing

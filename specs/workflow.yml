@@ -8,14 +8,14 @@ stages:
       submitDir: '{workdir}/submitDir'
     step: {$ref: 'steps.yml#/stanalysiscode'}
 
-#- name: stpostprocessing
-#  dependencies: [init, stanalysiscode]
-#  scheduler:
-#    scheduler_type: singlestep-stage
-#    parameters:
-#      name: recast-vbfmet-stpostprocessing
-#      input_directory: {step: stanalysiscode, output: HF_files}
-#    step: {$ref: 'steps.yml#/stpostprocessing'}
+- name: stpostprocessing
+  dependencies: [init, stanalysiscode]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      name: recast-vbfmet-stpostprocessing
+      input_directory: {step: stanalysiscode, output: HF_files}
+    step: {$ref: 'steps.yml#/stpostprocessing'}
 #
 #- name: statanalysis
 #  dependencies: [stanalysiscode, stpostprocessing, init]

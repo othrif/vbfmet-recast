@@ -9,9 +9,8 @@ recast:
   image: "recast/recastatlas:v0.1.0"
   script:
   # authenticate using env vars defined in RECAST
-  #- eval "$(recast auth setup -a $RECAST_USER -a $RECAST_PASS -a $RECAST_TOKEN -a default)"
-  - $(recast auth write --basedir authdir)
-#  - $(recast auth write --basedir auth)
+  - eval "$(recast auth setup -a $RECAST_USER -a $RECAST_PASS -a $RECAST_TOKEN -a default)"
+  - eval "$(recast auth write --basedir authdir)"
   - recast auth check-access-xrootd root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
 
   # make the workflow described in this repo known to RECAST

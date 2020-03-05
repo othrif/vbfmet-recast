@@ -37,7 +37,7 @@ recast:
     paths:
  #   - recast-test-mystanalysiscode
  #   - recast-test-mystattest
- #   - recast-myworkflowrun
+    - recast-myworkflowrun
     expire_in: 1 day
     when: always
 

@@ -73,14 +73,14 @@ stpostprocessing:
     - KRB5Auth
     - GRIDProxy
 
-limitsetting:
-  process:
-    process_type: 'interpolated-script-cmd'
-    script: |
-      source /recast_auth/getkrb.sh
-      source /home/atlas/release_setup.sh
-      echo "Time for the limit calculation"
-      ls -l
+#limitsetting:
+#  process:
+#    process_type: 'interpolated-script-cmd'
+#    script: |
+#      source /recast_auth/getkrb.sh
+#      source /home/atlas/release_setup.sh
+#      echo "Time for the limit calculation"
+#      ls -l
 #      set +e
 #      export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
 #      env
@@ -90,15 +90,15 @@ limitsetting:
 #      mkdir {BUILD_DIR}
 #      cd makeHistFitterConfig
 #      source setupTest.sh
-  publisher:
-    publisher_type: 'interpolated-pub'
-    publish:
-      limit_file: '{log_limit_HF}'
-  environment:
-    environment_type: 'docker-encapsulated'
-    image: gitlab-registry.cern.ch/vbfinv/statstools
-    imagetag: master
-    resources:
-    - KRB5Auth
-    - GRIDProxy
+#  publisher:
+#    publisher_type: 'interpolated-pub'
+#    publish:
+#      limit_file: '{log_limit_HF}'
+#  environment:
+#    environment_type: 'docker-encapsulated'
+#    image: gitlab-registry.cern.ch/vbfinv/statstools
+#    imagetag: master
+#    resources:
+#    - KRB5Auth
+#    - GRIDProxy
 

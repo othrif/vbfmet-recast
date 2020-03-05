@@ -9,7 +9,7 @@ stanalysiscode:
       runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1 -n100
       # Reformat the output such that it can be used by STPostProcessing
       mkdir -p {outputdir_minintuple}
-      mv submitDir/data-MiniNtuple/* {outputdir_minintuple}
+      mv submitDir/data-MiniNtuple/* {outputdir_minintuple}/VBFHAltSignal-MiniNtuple.root
       echo "outputdir_minintuple: " {outputdir_minintuple}
       echo "List content of directory:"
       ls -lR {outputdir_minintuple}
@@ -38,6 +38,7 @@ stpostprocessing:
       echo "path in list:"
       cat list
       python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
+      ls fout.root
       athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput {input_directory}/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
 
       mkdir -p output_files

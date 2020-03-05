@@ -30,6 +30,8 @@ recast:
 
   #- recast run atlas/atlas-vbfmet --example default --tag myworkflowrun
   - recast run atlas/atlas-vbfmet
+  - pwd
+  - cat
 
   artifacts:
     paths:

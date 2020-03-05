@@ -35,20 +35,50 @@ stpostprocessing:
       source /analysis/build/*/setup.sh
       export DISPLAY=localhost:0.0
       echo "{input_directory}" > list
-      echo "path in list:"
+      echo "path in list: <<<<"
       cat list
+      echo ">>>>>"
+      echo "Running getN.py <<<< "
       python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
-
+      echo ">>>>>"
+      echo "Running VBFAnalysisAlgJobOptions.py <<<< "
       athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput {input_directory}/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
-
+      echo ">>>>>"
+      echo "make output files <<<< "
       mkdir -p output_files
-      hadd output_files/VBFHAltSignal-MicroNtuple.root  VBFH125*.root
-
+      hadd output_files/VBFHAltSignal-MicroNtuple.root  VBFHAltSignal*.root
+      echo ">>>>>"
+      echo "make histfitter files <<<< "
       mkdir -p {outputdir_HF}
-      cd {outputdir_HF}
-      athena VBFAnalysis/HFInputJobOptions.py --filesInput ../output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
+      #cd {outputdir_HF}
+      #echo ">>>>>"
+      echo "Running HFInputJobOptions.py <<<< "
+      athena VBFAnalysis/HFInputJobOptions.py --filesInput output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
+      echo ">>>>>"
+      echo "hadding histfitter file <<<< "
       hadd {outputfile_HF} HFVBFHAltSignalNominal*root
-      cd ..
+      rm -f HFVBFHAltSignalNominal*_*root
+      mv {outputfile_HF} {outputdir_HF}/.
+      echo ">>>>>"
+  publisher:
+    publisher_type: 'interpolated-pub'
+    publish:
+      HFsignal: '{outputdir_HF}/{outputfile_HF}'
+      HFoutput: '{outputdir_HF}'
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: gitlab-registry.cern.ch/vbfinv/stpostprocessing
+    imagetag: master
+    resources:
+    - KRB5Auth
+    - GRIDProxy
+
+statcode:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      source /recast_auth/getkrb.sh
+      source /home/atlas/release_setup.sh
       ls -lR
   publisher:
     publisher_type: 'interpolated-pub'

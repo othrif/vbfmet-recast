@@ -31,7 +31,7 @@ tests:
 - name: test_stpostprocessing
   spec: steps.yml#/stpostprocessing
   parameters:
-    input_directory: '/Users/othmanerifki/vbf/workflow/input_files/user.othrif.vXX.999999.VBFHAltSignal.root/'
+    input_directory: '{readdir0}/input_files/user.othrif.vXX.999999.VBFHAltSignal.root'
     outputdir_HF: '{workdir}/HF_files'
     outputfile_HF: 'HFVBFHAltSignalNominal.root'
   data:

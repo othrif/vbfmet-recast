@@ -8,16 +8,16 @@ stanalysiscode:
       export USER=othrif
       runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1 -n100
       # Reformat the output such that it can be used by STPostProcessing
-      mkdir -p {outputdir}
-      mv submitDir/data-MiniNtuple {outputdir}
-      echo "outputdir: " {outputdir}
+      mkdir -p {outputdir_minintuple}
+      mv submitDir/data-MiniNtuple/* {outputdir_minintuple}
+      echo "outputdir_minintuple: " {outputdir_minintuple}
       echo "List content of directory:"
-      ls -lR {outputdir}
+      ls -lR {outputdir_minintuple}
   publisher:
     publisher_type: 'interpolated-pub'
     publish:
       outputfile: 'input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root'
-      outputdir: '{outputdir}'
+      MiniNtuple: '{outputdir_minintuple}'
   environment:
     environment_type: 'docker-encapsulated'
     image: gitlab-registry.cern.ch/vbfinv/stanalysiscode
@@ -26,59 +26,39 @@ stanalysiscode:
     - KRB5Auth
     - GRIDProxy
 
-#stpostprocessing:
-#  process:
-#    process_type: 'interpolated-script-cmd'
-#    script: |
-#      source /recast_auth/getkrb.sh
-#      source /home/atlas/release_setup.sh
-#      source /analysis/build/*/setup.sh
-#      export DISPLAY=localhost:0.0
-#
-#      echo "./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root" > list
-#      python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
-#      athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput ./input_files/user.othrif.vXX.999999.VBFHAltSignal.root/VBFHAltSignal-MiniNtuple.root/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
-#
-#      mkdir -p output_files
-#      hadd output_files/VBFHAltSignal-MicroNtuple.root  VBFH125*.root
-#
-#      mkdir -p HF_files
-#      cd HF_files
-#      athena VBFAnalysis/HFInputJobOptions.py --filesInput ../output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
-#      hadd HFVBFHAltSignalNominal.root HFVBFHAltSignalNominal*root
-#      cd ..
-#
-#  publisher:
-#    publisher_type: 'interpolated-pub'
-#    publish:
-#      outputfile: 'HF_files/HFVBFHAltSignalNominal.root'
-#  environment:
-#    environment_type: 'docker-encapsulated'
-#    image: gitlab-registry.cern.ch/vbfinv/stpostprocessing
-#    imagetag: master
-#    resources:
-#    - KRB5Auth
-#
-#statanalysis:
-#  process:
-#    process_type: interpolated-script-cmd
-#    interpreter: bash
-#    script: |
-#      source /home/atlas/release_setup.sh
-#      cd HistFitterTutorial
-#      source setup.sh
-#      cd src
-#      make
-#      echo "Launching the stat only limit...this will take a little while..."
-#      hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root HF_files/HFVBFHAltSignalNominal.root
-#      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal
-#      tail -30 limit.log
-#  publisher:
-#    publisher_type: interpolated-pub
-#    publish:
-#      limit:  'limit.log'
-#  environment:
-#    environment_type: 'docker-encapsulated'
-#    image: gitlab-registry.cern.ch/vbfinv/statstools
-#    imagetag: master
-#
+stpostprocessing:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      source /recast_auth/getkrb.sh
+      source /home/atlas/release_setup.sh
+      source /analysis/build/*/setup.sh
+      export DISPLAY=localhost:0.0
+      echo "{input_directory}/VBFHAltSignal-MiniNtuple.root" > list
+      echo "path in list:"
+      cat list
+      python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
+      athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput {input_directory}/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
+
+      mkdir -p output_files
+      hadd output_files/VBFHAltSignal-MicroNtuple.root  VBFH125*.root
+
+      mkdir -p {outputdir_HF}
+      cd {outputdir_HF}
+      athena VBFAnalysis/HFInputJobOptions.py --filesInput ../output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
+      hadd {outputfile_HF} HFVBFHAltSignalNominal*root
+      cd ..
+      ls -lR
+  publisher:
+    publisher_type: 'interpolated-pub'
+    publish:
+      HFsignal: '{outputdir_HF}/{outputfile_HF}'
+      HFoutput: '{outputdir_HF}'
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: gitlab-registry.cern.ch/vbfinv/stpostprocessing
+    imagetag: master
+    resources:
+    - KRB5Auth
+    - GRIDProxy
+

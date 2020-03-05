@@ -4,29 +4,18 @@ stages:
   scheduler:
     scheduler_type: singlestep-stage
     parameters:
-      name: {step: init, output: dxaod_file}
+      inputfile: {step: init, output: dxaod_file}
       submitDir: '{workdir}/submitDir'
-      outputdir: '{workdir}/input_files/user.othrif.vXX.999999.VBFHAltSignal.root'
+      outputdir_minintuple: '{workdir}/input_files/user.othrif.vXX.999999.VBFHAltSignal.root'
     step: {$ref: 'steps.yml#/stanalysiscode'}
 
-#- name: stpostprocessing
-#  dependencies: [init, stanalysiscode]
-#  scheduler:
-#    scheduler_type: singlestep-stage
-#    parameters:
-#      name: recast-vbfmet-stpostprocessing
-#      input_directory: {step: stanalysiscode, output: HF_files}
-#    step: {$ref: 'steps.yml#/stpostprocessing'}
-#
-#- name: statanalysis
-#  dependencies: [stanalysiscode, stpostprocessing, init]
-#  scheduler:
-#    scheduler_type: singlestep-stage
-#    parameters:
-#      input_histfitter: '{workdir}/HF_files'
-#      signal_file: {step: stpostprocessing, output: HF_files }
-#      background_file: exampleFile/HF_jan7_mc16all_nom.root
-#      resultdir: '{workdir}/fitresults'
-#    step: {$ref: 'steps.yml#/statanalysis'}
-#
-
+- name: stpostprocessing
+  dependencies: [init, stanalysiscode]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      name: recast-vbfmet-stpostprocessing
+      input_directory: {step: stanalysiscode, output: MiniNtuple}
+      outputdir_HF: '{workdir}/HF_files'
+      outputfile_HF: 'HFVBFHAltSignalNominal.root'
+    step: {$ref: 'steps.yml#/stpostprocessing'}

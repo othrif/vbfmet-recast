@@ -34,11 +34,11 @@ stpostprocessing:
       source /home/atlas/release_setup.sh
       source /analysis/build/*/setup.sh
       export DISPLAY=localhost:0.0
-      echo "{input_directory}/VBFHAltSignal-MiniNtuple.root" > list
+      echo "{input_directory}" > list
       echo "path in list:"
       cat list
       python /analysis/src/VBFAnalysis/util/getN.py -l list -o fout.root
-      ls fout.root
+
       athena VBFAnalysis/VBFAnalysisAlgJobOptions.py --filesInput {input_directory}/VBFHAltSignal-MiniNtuple.root - --currentVariation Nominal - --normFile fout.root
 
       mkdir -p output_files

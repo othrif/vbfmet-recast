@@ -35,4 +35,4 @@ tests:
     outputdir_HF: '{workdir}/HF_files'
     outputfile_HF: 'HFVBFHAltSignalNominal.root'
   data:
-    - testdata
+    - /Users/othmanerifki/vbf/workflow

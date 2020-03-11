@@ -6,13 +6,16 @@ stanalysiscode:
       source /home/atlas/release_setup.sh
       source /usr/WorkDir/1.0.0/InstallArea/*/setup.sh
       export USER=othrif
-      runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1 -n100
+      #runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1 -n100 #-s {submitDir}
+      runVBF.py -f {inputfile} -n100 -s {submitDir}
+      ls -lR
       # Reformat the output such that it can be used by STPostProcessing
       mkdir -p {outputdir_minintuple}
-      mv submitDir/data-MiniNtuple/* {outputdir_minintuple}/VBFHAltSignal-MiniNtuple.root
+      mv {submitDir}/data-MiniNtuple/* {outputdir_minintuple}/VBFHAltSignal-MiniNtuple.root
       echo "outputdir_minintuple: " {outputdir_minintuple}
       echo "List content of directory:"
       ls -lR {outputdir_minintuple}
+      ls -lR {submitDir}
   publisher:
     publisher_type: 'interpolated-pub'
     publish:
@@ -50,20 +53,18 @@ stpostprocessing:
       echo ">>>>>"
       echo "make histfitter files <<<< "
       mkdir -p {outputdir_HF}
-      #cd {outputdir_HF}
-      #echo ">>>>>"
       echo "Running HFInputJobOptions.py <<<< "
       athena VBFAnalysis/HFInputJobOptions.py --filesInput output_files/VBFHAltSignal-MicroNtuple.root - --currentVariation Nominal --Binning 11 --extraVars 7
       echo ">>>>>"
       echo "hadding histfitter file <<<< "
-      hadd {outputfile_HF} HFVBFHAltSignalNominal*root
+      hadd {outputdir_HF}/{outputfile_HF} HFVBFHAltSignalNominal*root
       rm -f HFVBFHAltSignalNominal*_*root
-      mv {outputfile_HF} {outputdir_HF}/.
+      echo "Listing "
+      ls -ltR
       echo ">>>>>"
   publisher:
     publisher_type: 'interpolated-pub'
     publish:
-      HFsignal: '{outputdir_HF}/{outputfile_HF}'
       HFoutput: '{outputdir_HF}'
   environment:
     environment_type: 'docker-encapsulated'

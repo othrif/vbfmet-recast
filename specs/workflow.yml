@@ -5,7 +5,7 @@ stages:
     scheduler_type: singlestep-stage
     parameters:
       inputfile: {step: init, output: dxaod_file}
-      submitDir: '{workdir}/submitDir'
+      submitDir: submitDirMAIN
       outputdir_minintuple: '{workdir}/input_files/user.othrif.vXX.999999.VBFHAltSignal.root'
     step: {$ref: 'steps.yml#/stanalysiscode'}
 
@@ -16,7 +16,7 @@ stages:
     parameters:
       name: recast-vbfmet-stpostprocessing
       input_directory: {step: stanalysiscode, output: MiniNtuple}
-      outputdir_HF: '{workdir}/HF_files'
+      outputdir_HF: '{workdir}/HF_signal'
       outputfile_HF: 'HFVBFHAltSignalNominal.root'
     step: {$ref: 'steps.yml#/stpostprocessing'}
 

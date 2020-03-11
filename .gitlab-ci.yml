@@ -29,7 +29,7 @@ recast:
   # run the workflow
 
   #- recast run atlas/atlas-vbfmet --example default --tag myworkflowrun
-  - recast run atlas/atlas-vbfmet
+  - recast run atlas/atlas-vbfmet --tag myrun
   - pwd
   - cat
 
@@ -37,7 +37,7 @@ recast:
     paths:
  #   - recast-test-mystanalysiscode
  #   - recast-test-mystattest
-    - recast-myworkflowrun
+    - recast-myrun
     expire_in: 1 day
     when: always
 

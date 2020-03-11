@@ -75,37 +75,24 @@ stpostprocessing:
     - KRB5Auth
     - GRIDProxy
 
-#limitsetting:
-#  process:
-#    process_type: 'interpolated-script-cmd'
-#    script: |
-#      echo "hello"
-#      mkdir -p {log_limit_HF}
-#      source /recast_auth/getkrb.sh
-#      source /home/atlas/release_setup.sh
-#      mkdir -p {log_limit_HF}
-#      echo "Time for the limit calculation" > {log_limit_HF}/limit.log
-#      cat {log_limit_HF}/limit.log
-#      ls -l
-#      set +e
-#      export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
-#      env
-#      ls -al /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
-#      source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
-#      lsetup 'root 6.08.06-x86_64-slc6-gcc62-opt'
-#      mkdir {BUILD_DIR}
-#      cd makeHistFitterConfig
-#      source setupTest.sh
-#  publisher:
-#    publisher_type: 'interpolated-pub'
-#    publish:
-#      limit_file: '{log_limit_HF}'
-#  environment:
-#    environment_type: 'docker-encapsulated'
-#    #image: gitlab-registry.cern.ch/vbfinv/statstools
-#    image: gitlab-registry.cern.ch/vbfinv/stpostprocessing
-#    imagetag: master
-#    resources:
-#    - KRB5Auth
-#    - GRIDProxy
+limitsetting:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      echo "Starting limit setting ..."
+      ls -l /recast_auth/getkrb.sh
+      cd StatsCode/makeHistFitterConfig
+      ls -lR .
+      source setupTest.sh
+  publisher:
+    publisher_type: 'interpolated-pub'
+    publish:
+      limit_file: '{log_limit_HF}'
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: gitlab-registry.cern.ch/vbfinv/statstools
+    imagetag: recast-6da1be23
+    resources:
+    - KRB5Auth
+    - GRIDProxy
 

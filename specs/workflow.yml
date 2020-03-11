@@ -21,11 +21,11 @@ stages:
       outputfile_HF: 'HFVBFHAltSignalNominal.root'
     step: {$ref: 'steps.yml#/stpostprocessing'}
 
-#- name: limitsetting
-#  dependencies: [init, stpostprocessing]
-#  scheduler:
-#    scheduler_type: singlestep-stage
-#    parameters:
-#      input_directory: {step: stpostprocessing, output: outputdir_HF}
-#      log_limit_HF: '{workdir}/limit_files'
-#    step: {$ref: 'steps.yml#/limitsetting'}
+- name: limitsetting
+  dependencies: [init, stpostprocessing]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      input_directory: {step: stpostprocessing, output: outputdir_HF}
+      log_limit_HF: '{workdir}/limit_files'
+    step: {$ref: 'steps.yml#/limitsetting'}

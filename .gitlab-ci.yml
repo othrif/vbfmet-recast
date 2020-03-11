@@ -23,8 +23,9 @@ recast:
 
   # run the test
 
-# - recast tests run atlas/atlas-vbfmet test_stanalysiscode --tag stanalysiscode
-#  - recast tests run atlas/atlas-vbfmet test_statanalysis --tag mystattest
+  - recast tests run atlas/atlas-vbfmet  test_stanalysiscode --backend docker --tag stanalysiscode
+  - recast tests run atlas/atlas-vbfmet  test_stpostprocessing --backend docker --tag stpostprocessing
+  - recast tests run atlas/atlas-vbfmet  test_limitsetting --backend docker --tag limitsetting
 
   # run the workflow
 
@@ -35,9 +36,10 @@ recast:
 
   artifacts:
     paths:
- #   - recast-test-mystanalysiscode
- #   - recast-test-mystattest
     - recast-myrun
+    - recast-test-stanalysiscode
+    - recast-test-stpostprocessing
+    - recast-test-limitsetting
     expire_in: 1 day
     when: always
 

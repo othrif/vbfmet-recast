@@ -80,9 +80,8 @@ limitsetting:
     process_type: 'interpolated-script-cmd'
     script: |
       echo "Starting limit setting ..."
-      ls -l /recast_auth/getkrb.sh
+      source /recast_auth/getkrb.sh
       cd StatsCode/makeHistFitterConfig
-      ls -lR .
       source setupTest.sh
   publisher:
     publisher_type: 'interpolated-pub'

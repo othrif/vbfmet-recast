@@ -31,7 +31,7 @@ recast:
 
   artifacts:
     paths:
-    - recast-myrun
+    #- recast-myrun
     - recast-test-stanalysiscode
     - recast-test-stpostprocessing
     - recast-test-limitsetting

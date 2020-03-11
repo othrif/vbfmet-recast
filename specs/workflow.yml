@@ -14,8 +14,9 @@ stages:
   scheduler:
     scheduler_type: singlestep-stage
     parameters:
-      name: recast-vbfmet-stpostprocessing
       input_directory: {step: stanalysiscode, output: MiniNtuple}
+      outputdir_MicroNtuple: '{workdir}/MicroNtuple_signal'
+      outputfile_MicroNtuple: 'VBFHAltSignal-MicroNtuple.root'
       outputdir_HF: '{workdir}/HF_signal'
       outputfile_HF: 'HFVBFHAltSignalNominal.root'
     step: {$ref: 'steps.yml#/stpostprocessing'}
@@ -25,7 +26,6 @@ stages:
 #  scheduler:
 #    scheduler_type: singlestep-stage
 #    parameters:
-#      name: recast-vbfmet-limitsetting
-#      input_directory: {step: stpostprocessing, output: HFoutput}
+#      input_directory: {step: stpostprocessing, output: outputdir_HF}
 #      log_limit_HF: '{workdir}/limit_files'
 #    step: {$ref: 'steps.yml#/limitsetting'}

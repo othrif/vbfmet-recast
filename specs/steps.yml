@@ -81,8 +81,24 @@ limitsetting:
     script: |
       echo "Starting limit setting ..."
       source /recast_auth/getkrb.sh
+      source ~/release_setup.sh
       cd StatsCode/makeHistFitterConfig
-      source setupTest.sh
+      echo "Cloning the HistFitter repository"
+      cp -rf HistFitterTutorialTmp HistFitterTutorial
+      echo "moving HistFitterTutorial..."
+      cd HistFitterTutorial
+      source setup.sh
+      cd src
+      printf "\n\n==============================\n\n"
+      echo "About to compile HistFitter"
+      make
+      cd ../..
+      printf "\n\n==============================\n\n"
+      echo "Launching the stat only limit...this will take a little while..."
+      hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root {input_directory}/{input_file}
+      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal &> limit.log
+      tail -30 limit.log
+      cp limit.log {log_limit_HF}/.
   publisher:
     publisher_type: 'interpolated-pub'
     publish:

@@ -22,17 +22,12 @@ recast:
   - recast catalogue check atlas/atlas-vbfmet
 
   # run the test
-
   - recast tests run atlas/atlas-vbfmet  test_stanalysiscode --backend docker --tag stanalysiscode
   - recast tests run atlas/atlas-vbfmet  test_stpostprocessing --backend docker --tag stpostprocessing
   - recast tests run atlas/atlas-vbfmet  test_limitsetting --backend docker --tag limitsetting
 
   # run the workflow
-
-  #- recast run atlas/atlas-vbfmet --example default --tag myworkflowrun
   - recast run atlas/atlas-vbfmet --tag myrun
-  - pwd
-  - cat
 
   artifacts:
     paths:

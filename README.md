@@ -3,7 +3,7 @@
 
 
 
-## Current Main Developers
+## Main Developer
 
 * Othmane Rifki (othmane.rifki@desy.de)
 

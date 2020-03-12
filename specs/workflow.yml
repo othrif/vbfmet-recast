@@ -26,7 +26,7 @@ stages:
   scheduler:
     scheduler_type: singlestep-stage
     parameters:
-      input_directory: {step: stpostprocessing, output: outputdir_HF}
+      input_directory: {step: stpostprocessing, output: HFoutput}
       input_file: {step: stpostprocessing, output: outputfile_HF}
       log_limit_HF: '{workdir}/limit_files'
     step: {$ref: 'steps.yml#/limitsetting'}

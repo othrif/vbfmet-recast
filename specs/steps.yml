@@ -66,6 +66,7 @@ stpostprocessing:
     publish:
       MicroNtuple: {outputdir_MicroNtuple}
       HFoutput: '{outputdir_HF}'
+      HFoutputfile: '{outputfile_HF}'
   environment:
     environment_type: 'docker-encapsulated'
     image: gitlab-registry.cern.ch/vbfinv/stpostprocessing

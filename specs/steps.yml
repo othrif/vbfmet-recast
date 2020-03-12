@@ -78,6 +78,7 @@ limitsetting:
   process:
     process_type: 'interpolated-script-cmd'
     script: |
+      exec bash
       echo "Starting limit setting ..."
       source /recast_auth/getkrb.sh
       echo ""
@@ -87,7 +88,7 @@ limitsetting:
       cp -rf HistFitterTutorialTmp HistFitterTutorial
       echo "moving HistFitterTutorial..."
       cd HistFitterTutorial
-      /bin/sh setup.sh
+      source setup.sh
       cd src
       printf "\n\n==============================\n\n"
       echo "About to compile HistFitter"
@@ -96,7 +97,7 @@ limitsetting:
       printf "\n\n==============================\n\n"
       echo "Launching the stat only limit...this will take a little while..."
       hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root {input_directory}/{input_file}
-      /bin/sh  runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal &> limit.log
+      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal &> limit.log
       printf "\n\n==============================\n\n"
       tail -30 limit.log
       cp limit.log {log_limit_HF}/.

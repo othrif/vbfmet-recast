@@ -6,7 +6,6 @@ stanalysiscode:
       source /home/atlas/release_setup.sh
       source /usr/WorkDir/1.0.0/InstallArea/*/setup.sh
       export USER=othrif
-      #runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1 -n100 #-s {submitDir}
       runVBF.py -f {inputfile} -n100 -s {submitDir}
       ls -lR
       # Reformat the output such that it can be used by STPostProcessing
@@ -81,22 +80,24 @@ limitsetting:
     script: |
       echo "Starting limit setting ..."
       source /recast_auth/getkrb.sh
-      source ~/release_setup.sh
-      cd StatsCode/makeHistFitterConfig
+      echo ""
+      source /home/atlas/release_setup.sh
+      cd /StatsCode/makeHistFitterConfig
       echo "Cloning the HistFitter repository"
       cp -rf HistFitterTutorialTmp HistFitterTutorial
       echo "moving HistFitterTutorial..."
       cd HistFitterTutorial
-      source setup.sh
+      /bin/sh setup.sh
       cd src
       printf "\n\n==============================\n\n"
       echo "About to compile HistFitter"
-      make
+      make clean && make
       cd ../..
       printf "\n\n==============================\n\n"
       echo "Launching the stat only limit...this will take a little while..."
       hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root {input_directory}/{input_file}
-      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal &> limit.log
+      /bin/sh  runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal &> limit.log
+      printf "\n\n==============================\n\n"
       tail -30 limit.log
       cp limit.log {log_limit_HF}/.
   publisher:
@@ -106,7 +107,7 @@ limitsetting:
   environment:
     environment_type: 'docker-encapsulated'
     image: gitlab-registry.cern.ch/vbfinv/statstools
-    imagetag: recast-6da1be23
+    imagetag: recast3-4b143c38
     resources:
     - KRB5Auth
     - GRIDProxy

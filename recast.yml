@@ -43,7 +43,8 @@ tests:
 - name: test_limitsetting
   spec: steps.yml#/limitsetting
   parameters:
-    input_directory: '{readdir0}/input_files/HF_files'
+    input_directory: '{readdir0}/input_files/HF_signal'
+    input_file: 'HFVBFHAltSignalNominal.root'
     BUILD_DIR: '{workdir}/build_dir'
     log_limit_HF: '{workdir}/limit_files'
   data:

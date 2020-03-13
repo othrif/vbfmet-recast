@@ -96,7 +96,6 @@ a - STAnalysisCode
 ``` bash
  docker run --rm -it -w $PWD -v $PWD:$PWD gitlab-registry.cern.ch/vbfinv/stanalysiscode:latest bash
  export USER=othrif
- echo "RubeFicu5" | kinit vbfhww
  source ~/release_setup.sh
  runVBF.py -f root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-exotics/jdm/vbfinv/RECAST/input/DAOD_EXOT5/mc16_13TeV.346600.PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_ZZ4nu_MET75.deriv.DAOD_EXOT5.e7613_s3126_r9364_p3895/DAOD_EXOT5.18795494._000010.pool.root.1
 ```

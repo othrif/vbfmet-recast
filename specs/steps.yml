@@ -6,7 +6,7 @@ stanalysiscode:
       source /home/atlas/release_setup.sh
       source /usr/WorkDir/1.0.0/InstallArea/*/setup.sh
       export USER=othrif
-      runVBF.py -f {inputfile} -n100 -s {submitDir}
+      runVBF.py -f {inputfile} -s {submitDir}
       ls -lR
       # Reformat the output such that it can be used by STPostProcessing
       mkdir -p {outputdir_minintuple}

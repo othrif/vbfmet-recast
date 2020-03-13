@@ -78,8 +78,8 @@ stpostprocessing:
 limitsetting:
   process:
     process_type: 'interpolated-script-cmd'
+    interpreter: bash
     script: |
-      exec bash
       echo "Starting limit setting ..."
       source /recast_auth/getkrb.sh
       echo ""

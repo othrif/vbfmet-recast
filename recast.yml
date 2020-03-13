@@ -20,7 +20,7 @@ example_inputs:
 results:
 - name: CLs 95% based upper limit on Higgs to Invisible Branching Ratio
   relpath: limitsetting/limit_files/Bhinv_bands.log
-  load_yaml: true
+  #load_yaml: true
 
 tests:
 - name: test_stanalysiscode

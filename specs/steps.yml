@@ -99,7 +99,8 @@ limitsetting:
       echo "Launching the stat only limit...this will take a little while..."
       hadd exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root exampleFile/HF_jan7_mc16all_nom.root {input_directory}/{input_file}
       mkdir -p {log_limit_HF}
-      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal &> {log_limit_HF}/limit.log
+      #source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom_VBFHAltSignal.root HF_jan7_mc16all_nom sys 0.001 VBFHAltSignal &> {log_limit_HF}/limit.log
+      source runStatOnlyBlindedDocker.sh exampleFile/HF_jan7_mc16all_nom.root HF_jan7_mc16all_nom &> {log_limit_HF}/limit.log
       printf "\n\n==============================\n\n"
       tail -30 {log_limit_HF}/limit.log
       cat {log_limit_HF}/limit.log | grep "Correct bands" -A7 -B1 > {log_limit_HF}/Bhinv_bands.log
